@@ -1,0 +1,327 @@
+CREATING A TREE AND IMPLEMENTING IN MAIN
+
+struct node 
+{
+  int data;
+  node *left;
+  node * right;
+  node(int val)
+  {
+    data=val;
+    left=right=NULL;
+  }
+};
+
+int main()
+{
+    struct node* root=new node(1);
+    root->left=new node(2);
+    root->right=new node(3);
+    root->left->left=new node(4);
+    root->left->right=new node(5);
+    
+}
+
+
+BFS
+
+PREORDER
+
+vector<int>ans;
+void preorder(node* root)
+{
+  ans.push_back(root->data);
+  preorder(root->left);
+  preorder(root->right);
+}
+return ans;
+
+INORDER
+
+vector<int>ans;
+void inorder(node* root)
+{
+  inorder(root->left);
+  ans.push_back(root->data);
+  inorder(root->right);
+}
+return ans;
+
+POSTORDER
+
+vector<int>ans;
+void postorder(node* root)
+{
+  postorder(root->left);
+  ans.push_back(root->data);
+  postorder(root->right);
+}
+return ans;
+
+
+DFS
+
+LEVEL ORDER TRAVERSAL
+
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>>ans;
+        queue<TreeNode*>q;
+        q.push(root);
+        if(root==NULL)return ans;
+        while(!q.empty())
+        {
+            int n=q.size();
+            vector<int>level;
+            for(int i=0 ;i<n ;i++)
+            {
+                TreeNode* node=q.front();
+                q.pop();
+                level.push_back(node->val);
+                if(node->left)q.push(node->left);
+                if(node->right)q.push(node->right);
+            }
+            ans.push_back(level);
+        }
+        return ans;
+    }
+
+
+ZIG ZAG ORDER TRAVERSAL 
+
+
+      vector<vector<int>>zigzag(TreeNode* root)
+{
+        vector<vector<int>>ans;
+        if(root==NULL)return ans;
+        bool flag=true;
+        queue<TreeNode*>q;
+        q.push(root);
+        while(!q.empty())
+  {
+        int n=q.size();
+        vector<int>level(n);
+        for(int i=0;i<n;i++)
+    {
+        TreeNode * node=q.front();
+        q.pop();
+        int index=flag?i:n-i-1;
+        level[index]=node->val;
+        if(node->left) q.push(node->left);
+        if(node->right)q.push(node->right);
+      }
+        ans.push_back(level);
+        flag=!flag;
+  }
+       return ans;
+}
+
+ BOUNDARY TRAVERSAL 
+
+  Left Nodes i.e boundary excluding leaf nodes
+  Leaf nodes (USE INORDER TRAVERSAL )
+  Right Nodes in reverse order excluding leaf nodes
+
+
+ bool isLeaf(Node* root) {
+        return !root->left && !root->right;
+    }
+
+    void addLeftBoundary(Node* root, vector<int>& res) {
+        Node* curr = root->left;
+        while (curr) {
+            if (!isLeaf(curr)) {
+                res.push_back(curr->data);
+            }
+            if (curr->left) {
+                curr = curr->left;
+            } else {
+                curr = curr->right;
+            }
+        }
+    }
+
+    void addRightBoundary(Node* root, vector<int>& res) {
+        Node* curr = root->right;
+        vector<int> temp;
+        while (curr) {
+            if (!isLeaf(curr)) {
+                temp.push_back(curr->data);
+            }
+            if (curr->right) {
+                curr = curr->right;
+            } else {
+                curr = curr->left;
+            }
+        }
+        for (int i = temp.size() - 1; i >= 0; --i) {
+            res.push_back(temp[i]);
+        }
+    }
+
+    void addLeaves(Node* root, vector<int>& res) {
+        if (isLeaf(root)) {
+            res.push_back(root->data);
+            return;
+        }
+        if (root->left) {
+            addLeaves(root->left, res);
+        }
+        if (root->right) {
+            addLeaves(root->right, res);
+        }
+    }
+
+    vector<int> printBoundary(Node* root) {
+        vector<int> res;
+        if (!root) {
+            return res;
+        } 
+        if (!isLeaf(root)) {
+            res.push_back(root->data);
+        }
+        addLeftBoundary(root, res);
+        addLeaves(root, res);
+        addRightBoundary(root, res);
+
+        return res;
+    }
+};
+
+
+VERTICAL ORDER TRAVERSAL
+
+
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        map<int , map<int , multiset<int>>> map;
+        queue<pair<TreeNode* , pair<int , int>>> q;
+        q.push({root , {0,0}});
+        
+        while(!q.empty()) {
+            auto curr = q.front();
+            q.pop();
+            TreeNode* node = curr.first;
+            int x = curr.second.first;
+            int y = curr.second.second;
+            
+            map[x][y].insert(node->val);
+            
+            if(node->left) {
+                q.push({node->left , {x-1 , y+1}});
+            }
+            if(node->right) {
+                q.push({node->right , {x+1 , y+1}});
+            }
+        }
+        vector<vector<int>> result;
+        for(auto p : map) {
+            vector<int> ans;
+            for(auto q : p.second) {
+                ans.insert(ans.end(),q.second.begin(),q.second.end());
+            }
+            result.push_back(ans);
+        }
+        return result;
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
